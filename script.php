@@ -14,6 +14,7 @@ class plgSystemJstatsInstallerScript
 	 *
 	 * @param $type
 	 * @param $parent
+	 *
 	 */
 	public function postflight($type, $parent)
 	{
@@ -21,7 +22,7 @@ class plgSystemJstatsInstallerScript
 
 		if ($type !== 'update')
 		{
-			$db = JFactory::getDbo();
+			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
 
 			$data = json_encode(array(
