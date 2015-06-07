@@ -4,6 +4,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+jimport('joomla.filesystem.file')
+
 /**
  * Class plgSystemJstats
  */
@@ -126,6 +128,6 @@ class plgSystemJstats extends JPlugin
 return $now;
 PHP;
 
-		file_put_contents($this->cacheFile, $php);
+		JFile::write($this->cacheFile, $php);
 	}
 }
