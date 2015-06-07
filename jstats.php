@@ -103,7 +103,8 @@ class plgSystemJstats extends JPlugin
 
 		try
 		{
-			$status = $http->post($uri, $data);
+			// Don't let the request take longer than 2 seconds to avoid page timeout issues
+			$status = $http->post($uri, $data, null, 2);
 
 			if ($status->code === 200)
 			{
@@ -112,7 +113,11 @@ class plgSystemJstats extends JPlugin
 		}
 		catch (UnexpectedValueException $e)
 		{
-			// There was an error sending stats. Should we do anything?g
+			// There was an error sending stats. Should we do anything?
+		}
+		catch (RuntimeException $e)
+		{
+			// There was an error connecting to the server or in the post request
 		}
 	}
 
