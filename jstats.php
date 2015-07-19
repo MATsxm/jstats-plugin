@@ -91,7 +91,7 @@ class plgSystemJstats extends JPlugin
 			'server_os' => php_uname('s') . ' ' . php_uname('r')
 		);
 
-		$uri = new JUri('http://jstats.dongilbert.net/submit');
+		$uri = new JUri('http://<your url>/submit');
 
 		try
 		{
@@ -106,10 +106,12 @@ class plgSystemJstats extends JPlugin
 		catch (UnexpectedValueException $e)
 		{
 			// There was an error sending stats. Should we do anything?
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
 		}
 		catch (RuntimeException $e)
 		{
 			// There was an error connecting to the server or in the post request
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
 		}
 	}
 
