@@ -29,6 +29,15 @@
 					label="PLG_JSTATS_UNIQUE_ID_LABEL"
 					size="10"
 				/>
+				<field
+					name="url"
+					type="url"
+					filter="url"
+					size="30"
+					default=""
+					description="PLG_JSTATS_URL_DESC"
+					label="PLG_JSTATS_URL_LABEL"					
+				/>
 			</fieldset>
 		</fields>
 	</config>
