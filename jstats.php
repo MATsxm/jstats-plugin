@@ -106,12 +106,12 @@ class plgSystemJstats extends JPlugin
 		catch (UnexpectedValueException $e)
 		{
 			// There was an error sending stats. Should we do anything?
-			JLog::add($e->getMessage(), JLog::WARNING);
+			JLog::add($e->getMessage(), JLog::WARNING, 'stats');
 		}
 		catch (RuntimeException $e)
 		{
 			// There was an error connecting to the server or in the post request
-			JLog::add($e->getMessage(), JLog::WARNING);
+			JLog::add($e->getMessage(), JLog::WARNING, 'stats');
 		}
 	}
 
