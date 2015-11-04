@@ -69,6 +69,6 @@ class plgSystemJstatsInstallerScript
 	 */
 	protected function generateUniqueId()
 	{
-		return md5(JFactory::getConfig()->get('secret') . time());
+		return hash('sha1', JFactory::getConfig()->get('secret') . time());
 	}
 }
