@@ -14,7 +14,7 @@ jimport('joomla.filesystem.file');
  *
  * @since  3.5
  */
-class PlgSystemStats extends JPlugin
+class PlgSystemJstats extends JPlugin
 {
 	/**
 	 * Path to the cache file
