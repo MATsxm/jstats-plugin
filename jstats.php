@@ -30,15 +30,6 @@ class PlgSystemJstats extends JPlugin
 	protected $db;
 
 	/**
-	 * Flag for whether or not to perform the check.
-	 *
-	 * @var bool
-	 *
-	 * @since 1.0
-	 */
-	protected $doCheck = false;
-
-	/**
 	 * Stats Plugin Constructor
 	 *
 	 * @param object $subject
