@@ -92,12 +92,10 @@ class PlgSystemJstats extends JPlugin
 			'server_os'   => php_uname('s') . ' ' . php_uname('r')
 		);
 
-		$uri = new JUri($this->params->get('url', 'https://developer.joomla.org/stats/submit'));
-
 		try
 		{
 			// Don't let the request take longer than 2 seconds to avoid page timeout issues
-			$status = $http->post($uri, $data, null, 2);
+			$status = $http->post($this->params->get('url', 'https://developer.joomla.org/stats/submit'), $data, null, 2);
 
 			if ($status->code === 200)
 			{
