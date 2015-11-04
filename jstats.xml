@@ -34,7 +34,7 @@
 					type="url"
 					filter="url"
 					size="30"
-					default="https://developer.joomla.org/stats"
+					default="https://developer.joomla.org/stats/submit"
 					description="PLG_JSTATS_URL_DESC"
 					label="PLG_JSTATS_URL_LABEL"					
 				/>
