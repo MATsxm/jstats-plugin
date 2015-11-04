@@ -14,13 +14,6 @@ jimport('joomla.filesystem.file');
 class PlgSystemJstats extends JPlugin
 {
 	/**
-	 * @var JApplication
-	 *
-	 * @since 1.0
-	 */
-	protected $app;
-
-	/**
 	 * Path to the cache file
 	 *
 	 * @var string
