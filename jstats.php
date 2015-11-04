@@ -8,8 +8,10 @@ jimport('joomla.filesystem.file');
 
 /**
  * Class plgSystemJstats
+ * 
+ * @since  1.0
  */
-class plgSystemJstats extends JPlugin
+class PlgSystemJstats extends JPlugin
 {
 	/**
 	 * @var JApplication
@@ -53,7 +55,6 @@ class plgSystemJstats extends JPlugin
 	 */
 	public function __construct(&$subject, $config = array())
 	{
-		$this->app = JFactory::getApplication();
 		$this->db = JFactory::getDbo();
 		$this->cacheFile = JPATH_ROOT . '/cache/jstats.php';
 
