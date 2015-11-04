@@ -91,7 +91,7 @@ class plgSystemJstats extends JPlugin
 			'server_os' => php_uname('s') . ' ' . php_uname('r')
 		);
 
-		$uri = new JUri($this->params->get('url', 'https://developer.joomla.org/stats'));
+		$uri = new JUri($this->params->get('url', 'https://developer.joomla.org/stats/submit'));
 
 		try
 		{
