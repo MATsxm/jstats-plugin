@@ -16,6 +16,14 @@ jimport('joomla.filesystem.file');
  */
 class PlgSystemJstats extends JPlugin
 {
+ 	/**
+	 * Application object
+	 *
+	 * @var    JApplicationCms
+	 * @since  3.5
+	 */
+	protected $app;
+
 	/**
 	 * Path to the cache file
 	 *
@@ -56,6 +64,12 @@ class PlgSystemJstats extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
+		// Only run this in admin
+		if (!$this->app->isAdmin())
+		{
+			return;
+		}
+
 		if (is_readable($this->cacheFile))
 		{
 			/** @var integer $checkedTime */
