@@ -109,14 +109,14 @@ class PlgSystemJstats extends JPlugin
 			$query    = $db->getQuery(true);
 
 			$data = json_encode(array(
-					'unique_id' => $uniqueId
+				'unique_id' => $uniqueId
 			));
 
 			// Store the new unique ID
 			$query
 				->update($db->qn('#__extensions'))
 				->set($db->qn('params') . ' = ' . $db->quote($data))
-				->where($db->qn('name') . ' = "plg_system_jstats"');
+				->where($db->quoteName('name') . ' = ' . $db->quote('plg_system_jstats'));
 
 			$db->setQuery($query)->execute();
 		}
