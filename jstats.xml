@@ -12,6 +12,7 @@
 	<scriptfile>script.php</scriptfile>
 	<files>
 		<filename plugin="jstats">jstats.php</filename>
+		<folder>fields</folder>
 	</files>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.plg_system_jstats.ini</language>
@@ -20,11 +21,11 @@
 		<language tag="de-DE">de-DE/de-DE.plg_system_jstats.sys.ini</language>
 	</languages>
 	<config>
-		<fields name="params">
+		<fields name="params" addfieldpath="/plugins/system/jstats/fields">
 			<fieldset name="basic">
 				<field
 					name="unique_id"
-					type="text"
+					type="stats.uniqueid"
 					description="PLG_JSTATS_UNIQUE_ID_DESC"
 					label="PLG_JSTATS_UNIQUE_ID_LABEL"
 					size="10"
