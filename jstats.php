@@ -95,7 +95,7 @@ class PlgSystemJstats extends JPlugin
 		 */
 		if (empty($uniqueId))
 		{
-			$this->params->set('unique_id', JCrypt::genRandomBytes(32));
+			$this->params->set('unique_id', hash('sha1', JUserHelper::genRandomPassword(32) . time()));
 		}
 
 		$query = $this->db->getQuery(true)
