@@ -19,25 +19,6 @@ class plgSystemJstatsInstallerScript
 	public function postflight($type, $parent)
 	{
 		$this->removeCacheFile();
-
-		if ($type !== 'update')
-		{
-			$db    = JFactory::getDbo();
-			$query = $db->getQuery(true);
-
-			$data = json_encode(array(
-				'unique_id' => $this->generateUniqueId()
-			));
-
-			// Enable and set a unique id
-			$query
-				->update('#__extensions')
-				->set('params = ' . $db->quote($data))
-				->set('enabled = 1')
-				->where('name = "plg_system_jstats"');
-
-			$db->setQuery($query)->execute();
-		}
 	}
 
 	public function uninstall($parent)
@@ -58,17 +39,5 @@ class plgSystemJstatsInstallerScript
 		{
 			unlink($cacheFile);
 		}
-	}
-
-	/**
-	 * Generates a unique key to reduce stats duplication.
-	 *
-	 * @return string
-	 *
-	 * @since 1.0
-	 */
-	protected function generateUniqueId()
-	{
-		return hash('sha1', JFactory::getConfig()->get('secret') . time());
 	}
 }
