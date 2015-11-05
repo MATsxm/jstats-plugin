@@ -77,6 +77,7 @@ class PlgSystemJstats extends JPlugin
 
 			if ($checkedTime < strtotime('-12 hours'))
 			{
+				$this->writeCacheFile();
 				$this->sendStats();
 			}
 		}
@@ -137,12 +138,7 @@ class PlgSystemJstats extends JPlugin
 		try
 		{
 			// Don't let the request take longer than 2 seconds to avoid page timeout issues
-			$status = JHttpFactory::getHttp()->post($this->params->get('url', 'https://developer.joomla.org/stats/submit'), $data, null, 2);
-
-			if ($status->code === 200)
-			{
-				$this->writeCacheFile();
-			}
+			JHttpFactory::getHttp()->post($this->params->get('url', 'https://developer.joomla.org/stats/submit'), $data, null, 2);
 		}
 		catch (UnexpectedValueException $e)
 		{
