@@ -105,8 +105,7 @@ class PlgSystemJstats extends JPlugin
 		if (empty($uniqueId))
 		{
 			$uniqueId = hash('sha1', $this->app->get('secret') . time());
-			$db       = JFactory::getDbo();
-			$query    = $db->getQuery(true);
+			$query    = $this->db->getQuery(true);
 
 			$data = json_encode(array(
 				'unique_id' => $uniqueId
@@ -114,11 +113,11 @@ class PlgSystemJstats extends JPlugin
 
 			// Store the new unique ID
 			$query
-				->update($db->quoteName('#__extensions'))
-				->set($db->quoteName('params') . ' = ' . $db->quote($data))
-				->where($db->quoteName('name') . ' = ' . $db->quote('plg_system_jstats'));
+				->update($this->db->quoteName('#__extensions'))
+				->set($this->db->quoteName('params') . ' = ' . $this->db->quote($data))
+				->where($this->db->quoteName('name') . ' = ' . $this->db->quote('plg_system_jstats'));
 
-			$db->setQuery($query)->execute();
+			$this->db->setQuery($query)->execute();
 		}
 
 		$data = array(
