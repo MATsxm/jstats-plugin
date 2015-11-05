@@ -103,7 +103,7 @@ class PlgSystemJstats extends JPlugin
 			->set($this->db->qn('params') . ' = ' . $this->db->quote($this->params->toString('JSON')))
 			->where($this->db->quoteName('type') . ' = ' . $this->db->quote('plugin'))
 			->where($this->db->quoteName('folder') . ' = ' . $this->db->quote('system'))
-			->where($this->db->quoteName('element') . ' = ' . $this->db->quote('updatenotification'));
+			->where($this->db->quoteName('element') . ' = ' . $this->db->quote('jstats'));
 
 		try
 		{
