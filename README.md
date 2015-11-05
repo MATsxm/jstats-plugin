@@ -6,7 +6,4 @@ The plugin will collect anonymously the PHP, Database Type and Version and Jooml
 
 # Configuring plugin
 
-In order to make the plugin send the data to your own server, modify the line 
-```$uri = new JUri('http://<your url>/submit');```
-
-to use your own URL.
+In order to make the plugin send the data to your own server, modify the parameter in the backend to use your own URL.
