@@ -35,8 +35,8 @@ class StatsFormFieldUniqueid extends JFormField
 	{
 		$onclick = ' onclick="document.getElementById(\'' . $this->id . '\').value=\'\';Joomla.submitbutton(\'plugin.apply\');"';
 
-		return '<input type="text" name="' . $this->name . '" id="' . $this->id . '" value="'
-			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" readonly="readonly" /> <a class="btn" ' . $onclick . '>'
+		return '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="'
+			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" /> <a class="btn" ' . $onclick . '>'
 			. '<span class="icon-refresh"></span> ' . JText::_('PLG_JSTATS_RESET_UNIQUE_ID') . '</a>';
 	}
 }
