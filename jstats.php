@@ -156,7 +156,7 @@ class PlgSystemJstats extends JPlugin
 			JLog::add($e->getMessage(), JLog::WARNING, 'stats');
 		}
 	}
-​
+
 	/**
 	 * Write the cache file
 	 *
