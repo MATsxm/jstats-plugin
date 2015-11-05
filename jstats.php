@@ -95,10 +95,34 @@ class PlgSystemJstats extends JPlugin
 	 */
 	private function sendStats()
 	{
-		$http = JHttpFactory::getHttp();
+		$http     = JHttpFactory::getHttp();
+		$uniqueId = $this->params->get('unique_id', '');
+
+		/**
+		 * If the unique ID is empty (because we have never submitted a piece of data before or because the refresh button
+		 * has been used - generate a new ID and store it in the database for future use.
+		 */
+		if (empty($uniqueId))
+		{
+			$uniqueId = hash('sha1', $this->app->get('secret') . time());
+			$db       = JFactory::getDbo();
+			$query    = $db->getQuery(true);
+
+			$data = json_encode(array(
+					'unique_id' => $uniqueId
+			));
+
+			// Store the new unique ID
+			$query
+				->update($db->qn('#__extensions'))
+				->set($db->qn('params') . ' = ' . $db->quote($data))
+				->where($db->qn('name') . ' = "plg_system_jstats"');
+
+			$db->setQuery($query)->execute();
+		}
 
 		$data = array(
-			'unique_id'   => $this->params->get('unique_id'),
+			'unique_id'   => $uniqueId,
 			'php_version' => PHP_VERSION,
 			'db_type'     => $this->db->name,
 			'db_version'  => $this->db->getVersion(),
