@@ -104,7 +104,7 @@ class PlgSystemJstats extends JPlugin
 		 */
 		if (empty($uniqueId))
 		{
-			$uniqueId = hash('sha1', $this->app->get('secret') . time());
+			$uniqueId = JCrypt::genRandomBytes(32);
 			$query    = $this->db->getQuery(true);
 
 			$data = json_encode(array(
