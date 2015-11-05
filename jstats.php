@@ -114,8 +114,8 @@ class PlgSystemJstats extends JPlugin
 
 			// Store the new unique ID
 			$query
-				->update($db->qn('#__extensions'))
-				->set($db->qn('params') . ' = ' . $db->quote($data))
+				->update($db->quoteName('#__extensions'))
+				->set($db->quoteName('params') . ' = ' . $db->quote($data))
 				->where($db->quoteName('name') . ' = ' . $db->quote('plg_system_jstats'));
 
 			$db->setQuery($query)->execute();
