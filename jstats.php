@@ -43,8 +43,8 @@ class PlgSystemJstats extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * @param   object &$subject The object to observe
-	 * @param   array  $config   An optional associative array of configuration settings.
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An optional associative array of configuration settings.
 	 *
 	 * @since   3.5
 	 */
@@ -95,29 +95,34 @@ class PlgSystemJstats extends JPlugin
 	 */
 	private function sendStats()
 	{
-		$http     = JHttpFactory::getHttp();
 		$uniqueId = $this->params->get('unique_id', '');
 
-		/**
+		/*
 		 * If the unique ID is empty (because we have never submitted a piece of data before or because the refresh button
 		 * has been used - generate a new ID and store it in the database for future use.
 		 */
 		if (empty($uniqueId))
 		{
 			$uniqueId = JCrypt::genRandomBytes(32);
-			$query    = $this->db->getQuery(true);
+			$this->params->set('unique_id', $uniqueId);
 
-			$data = json_encode(array(
-				'unique_id' => $uniqueId
-			));
-
-			// Store the new unique ID
-			$query
+			// Store the updated params
+			$query = $this->db->getQuery(true)
 				->update($this->db->quoteName('#__extensions'))
-				->set($this->db->quoteName('params') . ' = ' . $this->db->quote($data))
+				->set($this->db->quoteName('params') . ' = ' . $this->db->quote($this->params->toString()))
 				->where($this->db->quoteName('name') . ' = ' . $this->db->quote('plg_system_jstats'));
 
-			$this->db->setQuery($query)->execute();
+			try
+			{
+				$this->db->setQuery($query)->execute();
+			}
+			catch (RuntimeException $e)
+			{
+				// Let's not send stats if we couldn't store the generated ID
+				JLog::add('Could not store stats plugin parameters to the database: ' . $e->getMessage(), JLog::WARNING, 'stats');
+
+				return;
+			}
 		}
 
 		$data = array(
@@ -132,7 +137,7 @@ class PlgSystemJstats extends JPlugin
 		try
 		{
 			// Don't let the request take longer than 2 seconds to avoid page timeout issues
-			$status = $http->post($this->params->get('url', 'https://developer.joomla.org/stats/submit'), $data, null, 2);
+			$status = JHttpFactory::getHttp()->post($this->params->get('url', 'https://developer.joomla.org/stats/submit'), $data, null, 2);
 
 			if ($status->code === 200)
 			{
@@ -142,17 +147,17 @@ class PlgSystemJstats extends JPlugin
 		catch (UnexpectedValueException $e)
 		{
 			// There was an error sending stats. Should we do anything?
-			JLog::add($e->getMessage(), JLog::WARNING, 'stats');
+			JLog::add('Could not send site statistics to remote server: ' . $e->getMessage(), JLog::WARNING, 'stats');
 		}
 		catch (RuntimeException $e)
 		{
 			// There was an error connecting to the server or in the post request
-			JLog::add($e->getMessage(), JLog::WARNING, 'stats');
+			JLog::add('Could not connect to statistics server: ' . $e->getMessage(), JLog::WARNING, 'stats');
 		}
 		catch (Exception $e)
 		{
 			// An unexpected error in processing; don't let this failure kill the site
-			JLog::add($e->getMessage(), JLog::WARNING, 'stats');
+			JLog::add('Unexpected error connecting to statistics server: ' . $e->getMessage(), JLog::WARNING, 'stats');
 		}
 	}
 
