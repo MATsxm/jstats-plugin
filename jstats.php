@@ -177,4 +177,41 @@ class PlgSystemJstats extends JPlugin
 			JLog::add('Unexpected error connecting to statistics server: ' . $e->getMessage(), JLog::WARNING, 'stats');
 		}
 	}
+
+	/**
+	 * Clears cache groups. We use it to clear the plugins cache after we update the last run timestamp.
+	 *
+	 * @param   array  $clearGroups   The cache groups to clean
+	 * @param   array  $cacheClients  The cache clients (site, admin) to clean
+	 *
+	 * @return  void
+	 *
+	 * @since   3.5
+	 */
+	private function clearCacheGroups(array $clearGroups, array $cacheClients = array(0, 1))
+	{
+		$conf = JFactory::getConfig();
+
+		foreach ($clearGroups as $group)
+		{
+			foreach ($cacheClients as $client_id)
+			{
+				try
+				{
+					$options = array(
+						'defaultgroup' => $group,
+						'cachebase'    => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' :
+							$conf->get('cache_path', JPATH_SITE . '/cache')
+					);
+
+					$cache = JCache::getInstance('callback', $options);
+					$cache->clean();
+				}
+				catch (Exception $e)
+				{
+					// Ignore it
+				}
+			}
+		}
+	}
 }
