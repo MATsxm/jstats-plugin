@@ -9,6 +9,9 @@
 
 jimport('joomla.filesystem.file');
 
+// Uncomment the following line to enable debug mode (stats sent every single time)
+// define('PLG_SYSTEM_JSTATS_DEBUG', 1);
+
 /**
  * Statistics system plugin
  *
@@ -70,32 +73,20 @@ class PlgSystemJstats extends JPlugin
 			return;
 		}
 
-		if (is_readable($this->cacheFile))
-		{
-			/** @var integer $checkedTime */
-			$checkedTime = include $this->cacheFile;
+		// Do we need to run? Compare the last run timestamp stored in the plugin's options with the current
+		// timestamp. If the difference is greater than the cache timeout we shall not execute again.
+		$now  = time();
+		$last = (int) $this->params->get('lastrun', 0);
 
-			if ($checkedTime < strtotime('-12 hours'))
-			{
-				$this->writeCacheFile();
-				$this->sendStats();
-			}
-		}
-		else
+		// 12 hours - 60*60*12 = 43200
+		if (!defined('PLG_SYSTEM_JSTATS_DEBUG') && (abs($now - $last) < 43200))
 		{
-			$this->sendStats();
+			return;
 		}
-	}
 
-	/**
-	 * Send the system statistics to the remote server
-	 *
-	 * @return  void
-	 *
-	 * @since   3.5
-	 */
-	private function sendStats()
-	{
+		// Update last run status
+		$this->params->set('lastrun', $now);
+
 		$uniqueId = $this->params->get('unique_id', '');
 
 		/*
@@ -104,26 +95,56 @@ class PlgSystemJstats extends JPlugin
 		 */
 		if (empty($uniqueId))
 		{
-			$uniqueId = JCrypt::genRandomBytes(32);
-			$this->params->set('unique_id', $uniqueId);
+			$this->params->set('unique_id', JCrypt::genRandomBytes(32));
+		}
 
-			// Store the updated params
-			$query = $this->db->getQuery(true)
-				->update($this->db->quoteName('#__extensions'))
-				->set($this->db->quoteName('params') . ' = ' . $this->db->quote($this->params->toString()))
-				->where($this->db->quoteName('name') . ' = ' . $this->db->quote('plg_system_jstats'));
+		$query = $this->db->getQuery(true)
+			->update($this->db->quoteName('#__extensions'))
+			->set($this->db->qn('params') . ' = ' . $this->db->quote($this->params->toString('JSON')))
+			->where($this->db->quoteName('type') . ' = ' . $this->db->quote('plugin'))
+			->where($this->db->quoteName('folder') . ' = ' . $this->db->quote('system'))
+			->where($this->db->quoteName('element') . ' = ' . $this->db->quote('updatenotification'));
 
-			try
-			{
-				$this->db->setQuery($query)->execute();
-			}
-			catch (RuntimeException $e)
-			{
-				// Let's not send stats if we couldn't store the generated ID
-				JLog::add('Could not store stats plugin parameters to the database: ' . $e->getMessage(), JLog::WARNING, 'stats');
+		try
+		{
+			// Lock the tables to prevent multiple plugin executions causing a race condition
+			$this->db->lockTable('#__extensions');
+		}
+		catch (Exception $e)
+		{
+			// If we can't lock the tables it's too risky to continue execution
+			return;
+		}
 
-				return;
-			}
+		try
+		{
+			// Update the plugin parameters
+			$result = $this->db->setQuery($query)->execute();
+
+			$this->clearCacheGroups(array('com_plugins'), array(0, 1));
+		}
+		catch (Exception $exc)
+		{
+			// If we failed to execute
+			$this->db->unlockTables();
+			$result = false;
+		}
+
+		try
+		{
+			// Unlock the tables after writing
+			$this->db->unlockTables();
+		}
+		catch (Exception $e)
+		{
+			// If we can't lock the tables assume we have somehow failed
+			$result = false;
+		}
+
+		// Abort on failure
+		if (!$result)
+		{
+			return;
 		}
 
 		$data = array(
@@ -155,30 +176,5 @@ class PlgSystemJstats extends JPlugin
 			// An unexpected error in processing; don't let this failure kill the site
 			JLog::add('Unexpected error connecting to statistics server: ' . $e->getMessage(), JLog::WARNING, 'stats');
 		}
-	}
-
-	/**
-	 * Write the cache file
-	 *
-	 * @return  void
-	 *
-	 * @since   3.5
-	 */
-	private function writeCacheFile()
-	{
-		if (is_readable($this->cacheFile))
-		{
-			JFile::delete($this->cacheFile);
-		}
-
-		$now = time();
-
-		$php = <<<PHP
-<?php defined('_JEXEC') or die;
-
-return $now;
-PHP;
-
-		JFile::write($this->cacheFile, $php);
 	}
 }

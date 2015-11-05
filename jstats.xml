@@ -39,6 +39,12 @@
 					description="PLG_JSTATS_URL_DESC"
 					label="PLG_JSTATS_URL_LABEL"					
 				/>
+				<field
+					name="lastrun"
+					type="hidden"
+					default="0"
+					size="15"
+				/>
 			</fieldset>
 		</fields>
 	</config>
