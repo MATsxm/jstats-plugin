@@ -28,35 +28,12 @@ class PlgSystemJstats extends JPlugin
 	protected $app;
 
 	/**
-	 * Path to the cache file
-	 *
-	 * @var    string
-	 * @since  3.5
-	 */
-	protected $cacheFile;
-
-	/**
 	 * Database object
 	 *
 	 * @var    JDatabaseDriver
 	 * @since  3.5
 	 */
 	protected $db;
-
-	/**
-	 * Constructor
-	 *
-	 * @param   object  &$subject  The object to observe
-	 * @param   array   $config    An optional associative array of configuration settings.
-	 *
-	 * @since   3.5
-	 */
-	public function __construct(&$subject, $config = array())
-	{
-		$this->cacheFile = JPATH_ROOT . '/cache/jstats.php';
-
-		parent::__construct($subject, $config);
-	}
 
 	/**
 	 * Listener for the `onAfterInitialise` event
@@ -95,7 +72,8 @@ class PlgSystemJstats extends JPlugin
 		 */
 		if (empty($uniqueId))
 		{
-			$this->params->set('unique_id', hash('sha1', JUserHelper::genRandomPassword(32) . time()));
+			$uniqueId = hash('sha1', JUserHelper::genRandomPassword(32) . time());
+			$this->params->set('unique_id', $uniqueId);
 		}
 
 		$query = $this->db->getQuery(true)
